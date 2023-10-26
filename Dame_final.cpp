@@ -1999,12 +1999,12 @@ private:
 //
 
 void spielen(int z) {
-    std::cout<<"NEUES SPIEL"<<std::endl;
     int x_wins=0;
     int o_wins=0;
     int unentschieden=0;
     //
     for (int i=0; i<z; ++i) {
+        std::cout<<"NEUES SPIEL"<<std::endl;
         Dame game;
         int r = game.play();
         if (r==1) {x_wins+=1;}
