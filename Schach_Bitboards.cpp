@@ -4208,12 +4208,12 @@ private:
 //
 
 void spielen(int z) {
-    std::cout<<"NEUES SPIEL"<<std::endl;
     int k_wins=0;
     int K_wins=0;
     int unentschieden=0;
     //
     for (int i=0; i<z; ++i) {
+        std::cout<<"NEUES SPIEL"<<std::endl;
         Schach game;
         int r = game.play();
         if (r==1) {k_wins+=1;}
