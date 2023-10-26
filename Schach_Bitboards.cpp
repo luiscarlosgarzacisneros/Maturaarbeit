@@ -840,6 +840,10 @@ std::vector<std::vector<int>> other_K_endgame_matrix = matrix_minus(K_endgame_ma
 class Board;
 std::vector<Board> generate_children(int playerk);
 
+#define BROWN_TEXT "\033[38;2;139;69;19m"
+#define BEIGE_TEXT "\033[38;2;227;212;173m"
+#define RESET_TEXT "\033[0m"
+
 class Board {
 public:
 
@@ -869,34 +873,34 @@ public:
 
     void print_board() const {
         std::vector zahlen= {8,7,6,5,4,3,2,1};
-        std::vector<std::vector<std::string>> board;
+        std::vector<std::vector<int>> board;
         //initialize board with spaces
         for (int i = 0; i < 8; i++) {
-            std::vector<std::string> empty_string_vector(8, " ");
+            std::vector<int> empty_string_vector(8, 0);
             board.push_back(empty_string_vector);
         }
         //place symbols on board based on bitboards
         for (int i=0; i<8; i++) {
             for (int j=0; j<8; j++) {
                 uint64_t mask = 1ULL << (i*8+j);
-                if (this->b & mask) board[i][j] = 'b';
-                if (this->B & mask) board[i][j] = 'B';
-                if (this->f & mask) board[i][j] = 'f';
-                if (this->F & mask) board[i][j] = 'F';
-                if (this->l & mask) board[i][j] = 'l';
-                if (this->L & mask) board[i][j] = 'L';
-                if (this->x & mask) board[i][j] = 'x';
-                if (this->X & mask) board[i][j] = 'X';
-                if (this->t & mask) board[i][j] = 't';
-                if (this->T & mask) board[i][j] = 'T';
-                if (this->z & mask) board[i][j] = 'z';
-                if (this->Z & mask) board[i][j] = 'Z';
-                if (this->q & mask) board[i][j] = 'q';
-                if (this->Q & mask) board[i][j] = 'Q';
-                if (this->k & mask) board[i][j] = 'k';
-                if (this->K & mask) board[i][j] = 'K';
-                if (this->y & mask) board[i][j] = 'y';
-                if (this->Y & mask) board[i][j] = 'Y';
+                if (this->b & mask) board[i][j] = 1;
+                else if (this->B & mask) board[i][j] = -1;
+                else if (this->f & mask) board[i][j] = 9;
+                else if (this->F & mask) board[i][j] = -9;
+                else if (this->l & mask) board[i][j] = 2;
+                else if (this->L & mask) board[i][j] = -2;
+                else if (this->x & mask) board[i][j] = 3;
+                else if (this->X & mask) board[i][j] = -3;
+                else if (this->t & mask) board[i][j] = 4;
+                else if (this->T & mask) board[i][j] = -4;
+                else if (this->z & mask) board[i][j] = 7;
+                else if (this->Z & mask) board[i][j] = -7;
+                else if (this->q & mask) board[i][j] = 5;
+                else if (this->Q & mask) board[i][j] = -5;
+                else if (this->k & mask) board[i][j] = 6;
+                else if (this->K & mask) board[i][j] = -6;
+                else if (this->y & mask) board[i][j] = 8;
+                else if (this->Y & mask) board[i][j] = -8;
                 
             }
         }
@@ -906,17 +910,29 @@ public:
         //
         //print the board
         std::cout <<"    a   b   c   d   e   f   g   h\n";
-        std::cout <<"  ---------------------------------\n";
+        std::cout <<"  +---+---+---+---+---+---+---+---+\n";
         for (int i=0; i<8; i++) {
-            std::cout << zahlen[i] <<" I";
+            std::cout << zahlen[i] <<" |";
             for (int j=0; j<8; j++) {
                 std::cout << " ";
-                std::cout << board[i][j];
+                if(board[i][j]==1||board[i][j]==9) {std::cout<<BEIGE_TEXT<<"b"<<RESET_TEXT;}
+                else if(board[i][j]==2) {std::cout<<BEIGE_TEXT<<"L"<<RESET_TEXT;}
+                else if(board[i][j]==3) {std::cout<<BEIGE_TEXT<<"X"<<RESET_TEXT;}
+                else if(board[i][j]==4||board[i][j]==7) {std::cout<<BEIGE_TEXT<<"T"<<RESET_TEXT;}
+                else if(board[i][j]==5) {std::cout<<BEIGE_TEXT<<"Q"<<RESET_TEXT;}
+                else if(board[i][j]==6||board[i][j]==8) {std::cout<<BEIGE_TEXT<<"K"<<RESET_TEXT;}
+                else if(board[i][j]==-1||board[i][j]==-9) {std::cout<<BROWN_TEXT<<"b"<<RESET_TEXT;}
+                else if(board[i][j]==-2) {std::cout<<BROWN_TEXT<<"L"<<RESET_TEXT;}
+                else if(board[i][j]==-3) {std::cout<<BROWN_TEXT<<"X"<<RESET_TEXT;}
+                else if(board[i][j]==-4||board[i][j]==-7) {std::cout<<BROWN_TEXT<<"T"<<RESET_TEXT;}
+                else if(board[i][j]==-5) {std::cout<<BROWN_TEXT<<"Q"<<RESET_TEXT;}
+                else if(board[i][j]==-6||board[i][j]==-8) {std::cout<<BROWN_TEXT<<"K"<<RESET_TEXT;}
+                else {std::cout<<" ";}
                 std::cout << " ";
-                std::cout << "I";
+                std::cout << "|";
             }
             std::cout <<'\n';
-            std::cout <<"  ---------------------------------\n";
+            std::cout <<"  +---+---+---+---+---+---+---+---+\n";
         }
     }
 
@@ -3806,7 +3822,7 @@ public:
     MinimaxNode3 root_node;
     int token;
     Board board;
-    int max_time=30;
+    int max_time=20;
     int max_depth=10;
     int starting_depth=2;
     int depth_fuer_nur_schlagen=5;
@@ -4130,11 +4146,11 @@ int turn;
             Board new_move;
             Board* new_board;
             if (current==1) {
-                std::cout <<"k ist am Zug"<<std::endl;
+                std::cout <<"Weiss ist am Zug"<<std::endl;
                 new_board = player_1.get_move();
             }
             else if (current==2) {
-                std::cout<<"K ist am Zug"<<std::endl;
+                std::cout<<"Schwarz ist am Zug"<<std::endl;
                 new_board = player_2.get_move();
             }
             //
@@ -4166,12 +4182,12 @@ int turn;
                 else {
                     if (this_players_token == 6) {
                         this->board.print_board();
-                        std::cout << "K HAT GEWONNEN" << std::endl;
+                        std::cout << "SCHWARZ HAT GEWONNEN" << std::endl;
                         return -1;
                     }
                     else {
                         this->board.print_board();
-                        std::cout << "k HAT GEWONNEN" << std::endl;
+                        std::cout << "WEISS HAT GEWONNEN" << std::endl;
                         return 1;
                     }
                 }
@@ -4203,8 +4219,8 @@ void spielen(int z) {
         if (r==1) {k_wins+=1;}
         else if (r==-1) {K_wins+=1;}
         else if (r==0) {unentschieden+=1;}
-        std::cout<<"k: "<<k_wins<<std::endl;
-        std::cout<<"K: "<<K_wins<<std::endl;
+        std::cout<<"Weiss: "<<k_wins<<std::endl;
+        std::cout<<"Schwarz: "<<K_wins<<std::endl;
         std::cout<<"-: "<<unentschieden<<std::endl;
     }
     std::cout<<"FERTIG"<<std::endl;
