@@ -9,6 +9,14 @@
 #include <sstream>
 
 //
+
+#define RED_TEXT "\033[0;31m"
+#define YELLOW_TEXT "\033[0;33m"
+#define BLUE_TEXT "\033[0;34m"
+#define RESET_TEXT "\033[0m"
+
+//
+
 std::vector<std::vector<int>> deepcopy(const std::vector<std::vector<int>>& board) {
     std::vector<std::vector<int>> board_copy;
     for (const std::vector<int>& row : board){
@@ -30,17 +38,17 @@ bool is_int(int value) {
 
 void printboard(const std::vector<std::vector<int>>& board) {
     std::cout<<"  1   2   3   4   5   6   7"<<std::endl;
-    std::cout<<"-----------------------------"<<std::endl;
+    std::cout<<BLUE_TEXT<<"+---+---+---+---+---+---+---+"<<RESET_TEXT<<std::endl;
     for (int i = 0; i <6; ++i) {
-        std::cout<< "I ";
+        std::cout<<BLUE_TEXT<< "| "<<RESET_TEXT;
         for (int j = 0; j < 7; ++j) {
-            if (board[i][j] == 1) {std::cout<<"X";}
-            else if (board[i][j] == -1) {std::cout<<"O";}
+            if (board[i][j] == 1) {std::cout<<YELLOW_TEXT<<"O"<<RESET_TEXT;}
+            else if (board[i][j] == -1) {std::cout<<RED_TEXT<<"O"<<RESET_TEXT;}
             else {std::cout<<" ";}
-            std::cout <<" I ";
+            std::cout <<BLUE_TEXT<<" | "<<RESET_TEXT;
         }
         std::cout<<std::endl;
-        std::cout<<"-----------------------------"<<std::endl;
+        std::cout<<BLUE_TEXT<<"+---+---+---+---+---+---+---+"<<RESET_TEXT<<std::endl;
     }
 }
 
@@ -718,21 +726,21 @@ public:
             printboard(this->board);
 
             if (current==1) {
-                std::cout <<"X ist am Zug"<<std::endl;
+                std::cout <<"Gelb ist am Zug"<<std::endl;
                 std::vector<std::vector<int>> board_copy = deepcopy(this->board);
                 std::vector<std::vector<int>> new_board = player_1.get_move(board_copy);
                 this->board=new_board;
             }
             else if (current==2) {
-                std::cout<<"O ist am Zug"<<std::endl;
+                std::cout<<"Rot ist am Zug"<<std::endl;
                 std::vector<std::vector<int>> board_copy = deepcopy(this->board);
                 std::vector<std::vector<int>> new_board = player_2.get_move(board_copy);
                 this->board=new_board;
             }
             //
             if (game_over(board)) {printboard(this->board); std::cout<<"UNENTSCHIEDEN"<<std::endl; return 0;}
-            else if (gewonnen(this->board, 1)) {printboard(this->board); std::cout<<"X HAT GEWONNEN"<<std::endl; return 1;}
-            else if (gewonnen(this->board, -1)) {printboard(this->board); std::cout<<"O HAT GEWONNEN"<<std::endl; return -1;}
+            else if (gewonnen(this->board, 1)) {printboard(this->board); std::cout<<"GELB HAT GEWONNEN"<<std::endl; return 1;}
+            else if (gewonnen(this->board, -1)) {printboard(this->board); std::cout<<"ROT HAT GEWONNEN"<<std::endl; return -1;}
             //
             if (current==1) {current = 2;}
             else {current = 1;}
@@ -759,8 +767,8 @@ void spielen(int z) {
         if (r==1) {x_wins+=1;}
         else if (r== -1) {o_wins+=1;}
         else if (r==0) {unentschieden+= 1;}
-        std::cout<<"X: "<<x_wins<<std::endl;
-        std::cout<<"O: "<<o_wins<<std::endl;
+        std::cout<<"GELB: "<<x_wins<<std::endl;
+        std::cout<<"ROT: "<<o_wins<<std::endl;
         std::cout<<"-: "<<unentschieden<<std::endl;
     }
     std::cout<<"FERTIG"<<std::endl;
